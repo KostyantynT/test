@@ -1,0 +1,34 @@
+[
+{
+  "pk": 1, 
+  "model": "auth.user", 
+  "fields": {
+    "username": "admin", 
+    "first_name": "", 
+    "last_name": "", 
+    "is_active": true, 
+    "is_superuser": true, 
+    "is_staff": true, 
+    "last_login": "2013-08-27T13:57:10.990Z", 
+    "groups": [], 
+    "user_permissions": [], 
+    "password": "pbkdf2_sha256$10000$zfAoN90sGFbE$QVWh5cyuGlB1PQXmUKf7LvMcnYOB2kX8zMbJsUl4meU=", 
+    "email": "admin@admin.com", 
+    "date_joined": "2013-08-27T13:57:10.990Z"
+  }
+},
+{
+  "pk": 1, 
+  "model": "contact.contactinfo", 
+  "fields": {
+    "bio": "some bio notest", 
+    "surname": "Surname", 
+    "name": "Name", 
+    "birthdate": "1982-08-27T21:53:23Z", 
+    "other": "other....", 
+    "skype": "skype", 
+    "jabber": "jabber", 
+    "email": "admin@admin.com"
+  }
+}
+]

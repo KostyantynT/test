@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %} 
+	<div>
+		<div class='left'>
+			<p>
+				Name <b>{{ contactinfo.name }}</b>
+			</p>
+			<p>
+				Last name&nbsp; <b>{{ contactinfo.surname }}</b>
+			</p>
+			<p>
+				Date of birth <b>{{ contactinfo.birthdate }}</b>
+			</p>
+			<p>Bio:</p>
+			<p>{{ contactinfo.bio }}</p>
+		</div>
+
+		<div class='left'>
+			<p>Contacts</p>
+			<p>
+				Email <b>{{ contactinfo.email }}</b>
+			</p>
+			<p>
+				Jabber <b>{{ contactinfo.jabber }}</b>
+			</p>
+			<p>
+				Skype <b>{{ contactinfo.skype }}</b>
+			</p>
+			<p>Other contacts</p>
+			<p>{{ contactinfo.other }}</p>
+		</div>
+	</div>
+	<div class='clear' />
+{% endblock %}
