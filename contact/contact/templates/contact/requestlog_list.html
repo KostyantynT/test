@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+
+<table>
+		<thead>
+			<th>ID</th>
+			<th>DateTime</th>
+			<th>Path</th>
+		</thead>
+		<tbody>
+			{% for r in object_list %} 
+				<tr>
+					<td>{{ forloop.counter }}</td> 
+					<td>{{ r.time }}</td>
+					<td>{{ r.path }}</td>
+				<tr>
+			{% endfor %}			
+		</tbody>
+</table>
+
+{% endblock %}

@@ -36,6 +36,7 @@ class ContactViewTest(TestCase):
         
         
 class MiddlewareTest(TestCase):
+    fixtures = ["initial_data.json"]
     def test_middle_case(self):
         #check that we don't have any entity in the database
         requests = RequestLog.objects.all()
@@ -44,7 +45,7 @@ class MiddlewareTest(TestCase):
         #make the http request
         url = reverse("contact_view")
         c = Client()
-        c.get(url)
+        contact_result_view = c.get(url)
         
         requests = RequestLog.objects.all()
         #check that database has only 1 request
@@ -60,11 +61,18 @@ class MiddlewareTest(TestCase):
         requests = RequestLog.objects.all()
         self.assertEqual(len(requests), 2) 
         
-        #check that we have view for requests page
         url = reverse("requests_view")
+        #check that contact_view has link to requests page
+        self.assertContains(contact_result_view, 'requests')
+        self.assertContains(contact_result_view, url)
+        
+        #check that we have view for requests page
         result = c.get(url)
         self.assertEqual(result.status_code, 200)
         
-        #view context should contains 3 objects
-        self.assertEqual(result.context['requestlog'], 3)
-        
+        #view context should contain 3 objects
+        requests_list = result.context['object_list']
+        self.assertEqual(len(requests_list), 3)
+        #view should display path for each of object 
+        for r in requests_list:
+            self.assertContains(result, r.path)

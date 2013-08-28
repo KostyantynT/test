@@ -1,16 +1,17 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-from django.conf.urls.static import static
 
-
-from .views import ContactView
 from settings import STATIC_ROOT
+from .views import ContactView
+from .views import RequestsView
 
 admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', ContactView.as_view(), name='contact_view'),
+    url(r'^middleware/', RequestsView.as_view(), name='requests_view'),
+    
     # url(r'^contact/', include('contact.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
