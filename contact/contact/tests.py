@@ -1,5 +1,6 @@
 from django.test import Client
 from django.test import TestCase
+from django.db import models
 from django.core.urlresolvers import reverse
 
 from .models import ContactInfo
@@ -86,3 +87,42 @@ class ContextProcessorTest(TestCase):
         c = Client()
         result = c.get(url)
         self.assertTrue('settings' in result.context)
+        
+        
+class EditFormTest(TestCase):
+    fixtures = ['initial_data.json']
+    
+    def setUp(self):
+        pk = ContactInfo.objects.all()[0].pk
+        self.url = reverse('contact_edit', kwargs={'pk':pk})
+         
+    
+    def test_edit_form(self):
+        #make sure edit form exist
+        c = Client()
+        result = c.get(self.url)
+        
+        #it should be available after login...
+        self.assertEqual(result.status_code, 302)
+        
+        c.login(username='admin', password='admin')
+        
+        #now we should get correct response
+        result = c.get(self.url)
+        self.assertEqual(result.status_code, 200)
+        
+        #we should had object to change
+        ci = result.context['contactinfo']
+        self.assertFalse(ci is None, 'ContactInfo is None')
+        
+        #we will try to save the wrong data
+        ci.email = "test.com"
+        result = c.post(self.url, ci, follow=True)
+        self.assertContains(result, 'invalid')
+        
+        ci.email="tset@test.com"
+        result = c.post(self.url, ci, follow=True)
+        #we should be redirected
+        self.assertEqual(result.status_code, 302)
+        #view should contain new email
+        self.assertContains(result, ci.email)
