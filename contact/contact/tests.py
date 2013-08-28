@@ -3,6 +3,7 @@ from django.test import TestCase
 from django.core.urlresolvers import reverse
 
 from .models import ContactInfo
+from .models import RequestLog
 
 class ContactViewTest(TestCase):
     fixtures=['initial_data.json']
@@ -32,3 +33,38 @@ class ContactViewTest(TestCase):
         self.assertContains(response, 'Jabber')
         self.assertContains(response, 'Skype')
         self.assertContains(response, 'Other contacts')
+        
+        
+class MiddlewareTest(TestCase):
+    def test_middle_case(self):
+        #check that we don't have any entity in the database
+        requests = RequestLog.objects.all()
+        self.assertEqual(len(requests), 0)
+
+        #make the http request
+        url = reverse("contact_view")
+        c = Client()
+        c.get(url)
+        
+        requests = RequestLog.objects.all()
+        #check that database has only 1 request
+        self.assertEqual(len(requests), 1)
+        
+        #check that database has exactly our request
+        self.assertEqual(url, requests[0].path)
+        
+        #check that wrong request also logged
+        result = c.get("some-wrong-request")
+        self.assertEqual(result.status_code, 404)
+        
+        requests = RequestLog.objects.all()
+        self.assertEqual(len(requests), 2) 
+        
+        #check that we have view for requests page
+        url = reverse("requests_view")
+        result = c.get(url)
+        self.assertEqual(result.status_code, 200)
+        
+        #view context should contains 3 objects
+        self.assertEqual(result.context['requestlog'], 3)
+        

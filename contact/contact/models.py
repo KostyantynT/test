@@ -15,3 +15,8 @@ class ContactInfo(models.Model):
     jabber=models.CharField("Jabber", max_length=50, default='')
     skype=models.CharField("Skype", max_length=50, default='')
     other = models.CharField("Other contacts", max_length=256, default='')
+
+
+class RequestLog(models.Model):
+    path = models.CharField("Request", max_length=256)
+    time = models.DateTimeField("Date/Time", auto_now_add=True)
