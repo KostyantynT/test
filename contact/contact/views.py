@@ -11,3 +11,4 @@ class ContactView(generic.DetailView):
     
 class RequestsView(generic.ListView):
     model = RequestLog
+    queryset = RequestLog.objects.all()[:10]
