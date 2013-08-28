@@ -35,6 +35,10 @@ class ContactViewTest(TestCase):
         self.assertContains(response, 'Jabber')
         self.assertContains(response, 'Skype')
         self.assertContains(response, 'Other contacts')
+        #check that page actually has necessary data
+        for f in db_contact._meta.get_all_field_names():
+            if f != 'birthdate':
+                self.assertContains(response, db_contact.__getattribute__(f))
 
 
 class MiddlewareTest(TestCase):
