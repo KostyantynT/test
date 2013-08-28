@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 
 from .models import ContactInfo
 from .models import RequestLog
+from settings import STATIC_ROOT
 
 class ContactViewTest(TestCase):
     fixtures=['initial_data.json']
@@ -76,3 +77,12 @@ class MiddlewareTest(TestCase):
         #view should display path for each of object 
         for r in requests_list:
             self.assertContains(result, r.path)
+
+
+class ContextProcessorTest(TestCase):
+    def test_context_processor(self):
+        #make some request and check if response.context contains our settings
+        url = reverse("requests_view")
+        c = Client()
+        result = c.get(url)
+        self.assertTrue('settings' in result.context)
