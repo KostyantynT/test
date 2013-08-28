@@ -11,7 +11,7 @@ urlpatterns = patterns('',
     # Examples:
     url(r'^$', ContactView.as_view(), name='contact_view'),
     url(r'^middleware/', RequestsView.as_view(), name='requests_view'),
-    
+
     # url(r'^contact/', include('contact.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
