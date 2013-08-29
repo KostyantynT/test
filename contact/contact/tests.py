@@ -83,3 +83,9 @@ class MiddlewareTest(TestCase):
         #view should display path for each of object
         for r in requests_list:
             self.assertContains(result, r.path)
+
+        #check that data has correct ordering
+        first_date = requests_list[0].time
+        for r in requests_list[1:]:
+            self.assertGreater(r.time, first_date)
+            first_date = r.time
