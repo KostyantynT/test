@@ -86,6 +86,6 @@ class MiddlewareTest(TestCase):
 
         #check that data has correct ordering
         first_date = requests_list[0].time
-        for r in requests_list[1:]:
-            self.assertGreater(r.time, first_date)
+        for r in requests_list:
+            self.assertGreaterEqual(r.time, first_date)
             first_date = r.time
