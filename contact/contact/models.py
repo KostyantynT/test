@@ -8,7 +8,7 @@ class ContactInfo(models.Model):
     birthdate = models.DateTimeField("Date of birth")
     bio = models.CharField("Bio", max_length=256)
 
-    photo = models.ImageField("Photo",
+    photo = models.ImageField("Photo",\
                               upload_to="images/", blank=True, null=True)
 
     #Contacts...
