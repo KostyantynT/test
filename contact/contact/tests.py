@@ -2,13 +2,12 @@ from django.test import Client
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
-from .models import ContactInfo
-from .models import RequestLog
 from settings import STATIC_ROOT
+from models import ContactInfo
+from models import RequestLog
 
 
 class ContactViewTest(TestCase):
-
     fixtures = ['initial_data.json']
 
     def test_check_contactInfo_page_and_model(self):
@@ -37,6 +36,10 @@ class ContactViewTest(TestCase):
         self.assertContains(response, 'Jabber')
         self.assertContains(response, 'Skype')
         self.assertContains(response, 'Other contacts')
+        #check that page actually has necessary data
+        for f in db_contact._meta.get_all_field_names():
+            if f != 'birthdate':
+                self.assertContains(response, db_contact.__getattribute__(f))
 
 
 class MiddlewareTest(TestCase):
@@ -55,31 +58,38 @@ class MiddlewareTest(TestCase):
         requests = RequestLog.objects.all()
         #check that database has only 1 request
         self.assertEqual(len(requests), 1)
-
+        
         #check that database has exactly our request
         self.assertEqual(url, requests[0].path)
-
+        
         #check that wrong request also logged
         result = c.get("some-wrong-request")
         self.assertEqual(result.status_code, 404)
-
+        
         requests = RequestLog.objects.all()
-        self.assertEqual(len(requests), 2)
-
+        self.assertEqual(len(requests), 2) 
+        
         url = reverse("requests_view")
         #check that contact_view has link to requests page
         self.assertContains(contact_result_view, 'requests')
         self.assertContains(contact_result_view, url)
-
+        
         #check that we have view for requests page
         result = c.get(url)
         self.assertEqual(result.status_code, 200)
-
+        
         #view context should contain 3 objects
         requests_list = result.context['object_list']
         self.assertEqual(len(requests_list), 3)
-        #view should display path for each of object
+        #view should display path for each of object 
         for r in requests_list:
+            self.assertContains(result, r.path)
+
+        #check that data has correct ordering
+        first_date = requests_list[0].time
+        for r in requests_list:
+            self.assertGreaterEqual(r.time, first_date)
+            first_date = r.time
             self.assertContains(result, r.path)
 
 
