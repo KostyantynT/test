@@ -1,13 +1,15 @@
 from django.test import Client
 from django.test import TestCase
-from django.db import models
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
 from models import ContactInfo
 from models import RequestLog
 
+
 class ContactViewTest(TestCase):
-    fixtures=['initial_data.json']
+    fixtures = ['initial_data.json']
+
     def test_check_contactInfo_page_and_model(self):
         url = reverse("contact_view")
         #self.assertTrue(False, url)
@@ -38,6 +40,7 @@ class ContactViewTest(TestCase):
         
 class MiddlewareTest(TestCase):
     fixtures = ["initial_data.json"]
+
     def test_middle_case(self):
         #check that we don't have any entity in the database
         requests = RequestLog.objects.all()
@@ -93,9 +96,8 @@ class EditFormTest(TestCase):
     
     def setUp(self):
         pk = ContactInfo.objects.all()[0].pk
-        self.url = reverse('contact_edit', kwargs={'pk':pk})
-         
-    
+        self.url = reverse('contact_edit', kwargs={'pk': pk})
+
     def test_edit_form(self):
         #make sure edit form exist
         c = Client()
@@ -122,18 +124,16 @@ class EditFormTest(TestCase):
         for field in ci._meta.get_all_field_names():
             contactinfo[field] = ci.__getattribute__(field)
         
-        contactinfo['birthdate']='1982-08-27 16:53:20'
+        contactinfo['birthdate'] = '1982-08-27 16:53:20'
         del contactinfo['photo']
         
         #ci.photo = None
         result = c.post(self.url, contactinfo, follow=True)
-        #self.assertContains(result, text, count, status_code, msg_prefix, html)
-        #self.assertTrue(False, result.content)
-        self.assertIn('Enter a valid email address.', result.content)
-        #self.assertContains(result, 'Enter a valid email address.', None, 200, '', True)
+        self.assertContains(result, 'Enter a valid email address.')
         
-        contactinfo['email']="tset@test.com"
+        contactinfo['email'] = "tset@test.com"
         result = c.post(self.url, contactinfo, follow=True)
+        self.assertRedirects(result, reverse('contact_view'))
         #we should be redirected
         self.assertEqual(result.status_code, 200)
         #view should contain new email

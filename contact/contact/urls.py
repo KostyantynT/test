@@ -11,11 +11,10 @@ from views import RequestsView
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    # Examples:
     url(r'^$', ContactView.as_view(), name='contact_view'),
     url(r'^edit/(?P<pk>\d+)/$', login_required(ContactUpdate.as_view()), name='contact_edit'),
     url(r'^middleware/$', RequestsView.as_view(), name='requests_view'),
-    url(r'^login$', login , name='login'),
+    url(r'^login$', login, name='login'),
     url(r'^login(?P<next>.*)$', login, {'next': '/'}, name='login_next'),
     # url(r'^contact/', include('contact.foo.urls')),
 

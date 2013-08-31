@@ -5,6 +5,7 @@ from forms import ContactInfoForm
 from models import ContactInfo
 from models import RequestLog
 
+
 class ContactView(generic.DetailView):
     model = ContactInfo
     
