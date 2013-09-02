@@ -8,7 +8,7 @@ class ContactInfo(models.Model):
     birthdate = models.DateTimeField("Date of birth")
     bio = models.CharField("Bio", max_length=256)
     #I know it will be required :)
-    #photo = models.ImageField("Photo", upload_to="images/", blank=True, null=True)
+    photo = models.ImageField("Photo", upload_to="images/", blank=True, null=True)
     
     #Contacts...
     email = models.EmailField("Email", max_length=254, default='')

@@ -52,7 +52,7 @@ p{
 		content:':';
 }
 .photo{
-	display:inline-block;
+	display:block;
 }
 
 .photo img{

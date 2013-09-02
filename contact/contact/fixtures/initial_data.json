@@ -21,7 +21,7 @@
   "pk": 1, 
   "model": "contact.contactinfo", 
   "fields": {
-    "bio": "some bio notest", 
+    "bio": "some bio notest",
     "surname": "Surname", 
     "name": "Name", 
     "birthdate": "1982-08-27T21:53:23Z", 

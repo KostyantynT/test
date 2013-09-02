@@ -2,7 +2,6 @@ from django.test import Client
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
-from settings import STATIC_ROOT
 from models import ContactInfo
 from models import RequestLog
 
@@ -100,3 +99,53 @@ class ContextProcessorTest(TestCase):
         c = Client()
         result = c.get(url)
         self.assertTrue('settings' in result.context)
+        self.assertTrue('settings' in result.context)
+        
+        
+class EditFormTest(TestCase):
+    fixtures = ['initial_data.json']
+    
+    def setUp(self):
+        pk = ContactInfo.objects.all()[0].pk
+        self.url = reverse('contact_edit', kwargs={'pk': pk})
+
+    def test_edit_form(self):
+        #make sure edit form exist
+        c = Client()
+        result = c.get(self.url)
+        
+        #it should be available after login...
+        self.assertEqual(result.status_code, 302)
+        
+        result = c.login(username='admin', password='admin')
+        self.assertTrue(result, 'Login was unsuccessful')
+        
+        #now we should get correct response
+        result = c.get(self.url)
+        self.assertEqual(result.status_code, 200)
+        
+        #we should had object to change
+        ci = ContactInfo.objects.all()[0]
+        
+        self.assertFalse(ci is None, 'ContactInfo is None')
+        
+        #we will try to save the wrong data
+        contactinfo = {}
+        ci.email = "testcom"
+        for field in ci._meta.get_all_field_names():
+            contactinfo[field] = ci.__getattribute__(field)
+        
+        contactinfo['birthdate'] = '1982-08-27 16:53:20'
+        del contactinfo['photo']
+        
+        #ci.photo = None
+        result = c.post(self.url, contactinfo, follow=True)
+        self.assertContains(result, 'Enter a valid email address.')
+        
+        contactinfo['email'] = "tset@test.com"
+        result = c.post(self.url, contactinfo, follow=True)
+        self.assertRedirects(result, reverse('contact_view'))
+        #we should be redirected
+        self.assertEqual(result.status_code, 200)
+        #view should contain new email
+        self.assertContains(result, contactinfo['email'])

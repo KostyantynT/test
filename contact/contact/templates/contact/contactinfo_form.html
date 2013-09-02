@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+
+{%load contact_filters %}
+<form action="{{ action }}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div>
+		<div class="left">
+		
+	 	{% for field in form %}
+	 		<div class="fieldWrapper">
+				<p>
+					{% if field.errors %}
+							{{ field.errors }}
+					{% endif %}
+					<span>{{ field.label_tag }}</span> {{ field }}
+				</p>
+	 			{% if field|is_File %}
+					<div class="photo">
+					{% if contactinfo.photo %}
+						<img src="{{ contactinfo.photo.url }}" alt="{{ contactinfo.name }} {{ contactinfo.surname }} Photo" />
+					{% else %}
+						<p>Photo was not uploaded yet</p>
+					{% endif %}
+					</div>
+				{% endif %}
+				</div>
+				{% if forloop.counter == 4 %}
+					</div><div class="left">
+					<p>Contacts</p>
+				{% endif %}
+	    {% endfor %}
+	    </div>
+	</div>
+	<div class="clear" />
+	<p>
+		<input type="submit" value="Save" />
+		<a href="{% url 'contact_view' %}">Cancel</a>
+	</p>
+</form>
+
+{% endblock %}
