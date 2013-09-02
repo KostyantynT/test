@@ -39,7 +39,12 @@ class ContactViewTest(TestCase):
         for f in db_contact._meta.get_all_field_names():
             if f != 'birthdate':
                 self.assertContains(response, db_contact.__getattribute__(f))
-
+        #check that we have admin edit link in the view
+        #we should be logged in
+        res = c.login(username='admin', password='admin')
+        self.assertTrue(res)
+        response = c.get(url)
+        self.assertContains(response, "(admin)")
 
 class MiddlewareTest(TestCase):
     fixtures = ["initial_data.json"]
