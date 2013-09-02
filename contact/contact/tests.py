@@ -46,6 +46,7 @@ class ContactViewTest(TestCase):
         response = c.get(url)
         self.assertContains(response, "(admin)")
 
+
 class MiddlewareTest(TestCase):
     fixtures = ["initial_data.json"]
 
