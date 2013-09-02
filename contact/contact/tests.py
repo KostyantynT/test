@@ -53,26 +53,26 @@ class MiddlewareTest(TestCase):
         url = reverse("contact_view")
         c = Client()
         contact_result_view = c.get(url)
-
+        
         requests = RequestLog.objects.all()
         #check that database has only 1 request
         self.assertEqual(len(requests), 1)
-
+        
         #check that database has exactly our request
         self.assertEqual(url, requests[0].path)
-
+        
         #check that wrong request also logged
         result = c.get("some-wrong-request")
         self.assertEqual(result.status_code, 404)
-
+        
         requests = RequestLog.objects.all()
-        self.assertEqual(len(requests), 2)
-
+        self.assertEqual(len(requests), 2) 
+        
         url = reverse("requests_view")
         #check that contact_view has link to requests page
         self.assertContains(contact_result_view, 'requests')
         self.assertContains(contact_result_view, url)
-
+        
         #check that we have view for requests page
         result = c.get(url)
         self.assertEqual(result.status_code, 200)
@@ -111,9 +111,10 @@ class EditFormTest(TestCase):
         #make sure edit form exist
         c = Client()
         result = c.get(self.url)
+        
         #it should be available after login...
         self.assertEqual(result.status_code, 302)
-
+        
         result = c.login(username='admin', password='admin')
         self.assertTrue(result, 'Login was unsuccessful')
         #now we should get correct response
@@ -131,15 +132,16 @@ class EditFormTest(TestCase):
         for field in ci._meta.get_all_field_names():
             contactinfo[field] = ci.__getattribute__(field)
 
-        contactinfo['birthdate'] = '1982-08-27 16:53:20'
         del contactinfo['photo']
 
-        #ci.photo = None
         result = c.post(self.url, contactinfo, follow=True)
-        self.assertIn('Enter a valid email address.', result.content)
+        self.assertContains(result, 'Enter a valid email address.')
+
+        contactinfo['birthdate'] = '27/08/1982 16:55'
 
         contactinfo['email'] = "tset@test.com"
         result = c.post(self.url, contactinfo, follow=True)
+        self.assertRedirects(result, reverse('contact_view'))
         #we should be redirected
         self.assertEqual(result.status_code, 200)
         #view should contain new email

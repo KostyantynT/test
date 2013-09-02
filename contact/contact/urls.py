@@ -11,7 +11,6 @@ from views import RequestsView
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    # Examples:
     url(r'^$', ContactView.as_view(), name='contact_view'),
     url(r'^edit/(?P<pk>\d+)/$',
         login_required(ContactUpdate.as_view()), name='contact_edit'),

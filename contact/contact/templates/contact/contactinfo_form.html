@@ -7,11 +7,38 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="{% static "js/bootstrap.min.js" %}" type="text/javascript" ></script>
 <script src="{% static "js/bootstrap-datetimepicker.js" %}" type="text/javascript" ></script>
+<script src="{% static "js/jquery.form.js" %}" type="text/javascript" ></script>
 
- {{ form.media }}
 {% endblock %}
 
 {% block content %}
+
+    <script type="text/javascript">
+    $(document).ready(function(){
+        function indicateProgress() {
+                    $("form input, form textarea").prop('disabled', 'disabled');
+			        $('#progress').show();
+                }
+        function ajaxFinish(){
+                    $("form input, form textarea").removeProp('disabled');
+                    $('#progress').hide()
+                }
+        var options = {
+            target: $('body'),
+            beforeSubmit: indicateProgress,
+            success: ajaxFinish
+        };
+
+        $('form').submit(function() {
+            // submit the form
+            $(this).ajaxSubmit(options);
+            // return false to prevent normal browser submit and page navigation
+            return false;
+        });
+    });
+</script>
+
+<img id="progress" src="{% static "img/progress.gif" %}" alt="Progress..." />
 
 {%load contact_filters %}
 <form action="{{ action }}" method="POST" enctype="multipart/form-data">
@@ -44,7 +71,7 @@
 	    {% endfor %}
 	    </div>
 	</div>
-	<div class="clear" />
+	<div class="clear" ></div>
 	<p>
 		<input type="submit" value="Save" />
 		<a href="{% url 'contact_view' %}">Cancel</a>

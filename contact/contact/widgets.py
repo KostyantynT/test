@@ -1,7 +1,7 @@
 import re
 import uuid
 
-from django.forms.widgets import  MultiWidget, to_current_timezone
+from django.forms.widgets import MultiWidget, to_current_timezone
 from django.forms.widgets import DateTimeInput, Media
 from datetime import datetime
 from django.utils.safestring import mark_safe
