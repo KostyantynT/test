@@ -1,6 +1,8 @@
 from django.test import Client
 from django.test import TestCase
+from django.core.management import call_command
 from django.core.urlresolvers import reverse
+from StringIO import StringIO
 
 from models import ContactInfo
 from models import RequestLog
@@ -59,26 +61,26 @@ class MiddlewareTest(TestCase):
         url = reverse("contact_view")
         c = Client()
         contact_result_view = c.get(url)
-        
+
         requests = RequestLog.objects.all()
         #check that database has only 1 request
         self.assertEqual(len(requests), 1)
-        
+
         #check that database has exactly our request
         self.assertEqual(url, requests[0].path)
-        
+
         #check that wrong request also logged
         result = c.get("some-wrong-request")
         self.assertEqual(result.status_code, 404)
-        
+
         requests = RequestLog.objects.all()
-        self.assertEqual(len(requests), 2) 
-        
+        self.assertEqual(len(requests), 2)
+
         url = reverse("requests_view")
         #check that contact_view has link to requests page
         self.assertContains(contact_result_view, 'requests')
         self.assertContains(contact_result_view, url)
-        
+
         #check that we have view for requests page
         result = c.get(url)
         self.assertEqual(result.status_code, 200)
@@ -117,10 +119,10 @@ class EditFormTest(TestCase):
         #make sure edit form exist
         c = Client()
         result = c.get(self.url)
-        
+
         #it should be available after login...
         self.assertEqual(result.status_code, 302)
-        
+
         result = c.login(username='admin', password='admin')
         self.assertTrue(result, 'Login was unsuccessful')
         #now we should get correct response
@@ -152,3 +154,14 @@ class EditFormTest(TestCase):
         self.assertEqual(result.status_code, 200)
         #view should contain new email
         self.assertContains(result, contactinfo['email'])
+
+
+class CommandTest(TestCase):
+    fixtures = ['initial_data.json']
+
+    def test_print_models_command(self):
+        o = StringIO()
+        e = StringIO()
+        call_command('printmodels', stdout=o, stderr=e)
+        self.assertTrue('ContactInfo model has 1 object(s).' in o.getvalue())
+        self.assertTrue('error: ContactInfo model has 1 object(s).' in e.getvalue())
