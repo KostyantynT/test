@@ -3,9 +3,7 @@ import uuid
 
 from django.forms.widgets import  MultiWidget, to_current_timezone
 from django.forms.widgets import DateTimeInput, Media
-from django.utils.translation import ugettext as _
 from datetime import datetime
-from django.utils import translation
 from django.utils.safestring import mark_safe
 
 I18N = """
