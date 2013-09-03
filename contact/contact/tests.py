@@ -170,8 +170,10 @@ class CommandTest(TestCase):
 
 class SignalsTest(TestCase):
     fixtures = ['initial_data.json']
-    
+
     def test_signals_are_stored(self):
+        #required for registering signals...
+        from contact import signals
         #make sure we have empty logs
         obj = HistoryLog.objects.all()
         self.assertEqual(len(obj), 0)
@@ -187,8 +189,7 @@ class SignalsTest(TestCase):
         #let's delete the record
         ci.delete()
         obj = HistoryLog.objects.get(action='D')
-        self.assertEqual(len(obj), 1)
 
         #let's check that model name equal ContactInfo
-        deleterecord = obj[0]
-        self.assertEqual(deleterecord.objectModel, 'ContactInfo')
+        self.assertEqual(obj.objectModel, 'ContactInfo')
+        self.assertEqual(obj.action, 'D')
