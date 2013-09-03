@@ -24,3 +24,17 @@ class RequestLog(models.Model):
 
     class Meta:
         ordering = ['time']
+
+
+class HistoryLog(models.Model):
+    ACTION_STATE = (
+        ('C', 'Created'),
+        ('D', 'Deleted'),
+        ('U', 'Updated'),
+    )
+    time = models.DateTimeField("Time", auto_now_add=True)
+    objectModel = models.CharField("Model", max_length=50)
+    action = models.CharField("Action", max_length=1, choices=ACTION_STATE)
+
+    class Meta:
+        ordering = ['-time']

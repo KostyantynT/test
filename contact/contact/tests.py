@@ -6,6 +6,7 @@ from StringIO import StringIO
 
 from models import ContactInfo
 from models import RequestLog
+from models import HistoryLog
 
 
 class ContactViewTest(TestCase):
@@ -165,3 +166,29 @@ class CommandTest(TestCase):
         call_command('printmodels', stdout=o, stderr=e)
         self.assertTrue('ContactInfo model has 1 object(s).' in o.getvalue())
         self.assertTrue('error: ContactInfo model has 1 object(s).' in e.getvalue())
+
+
+class SignalsTest(TestCase):
+    fixtures = ['initial_data.json']
+    
+    def test_signals_are_stored(self):
+        #make sure we have empty logs
+        obj = HistoryLog.objects.all()
+        self.assertEqual(len(obj), 0)
+        #let's update one record
+        ci = ContactInfo.objects.all()[0]
+        ci.name = 'New name'
+        ci.save()
+        #make sure we have one update record
+        obj = HistoryLog.objects.all()
+        self.assertEqual(len(obj), 1)
+        updaterecord = obj[0]
+        self.assertEqual(updaterecord.action, 'U')
+        #let's delete the record
+        ci.delete()
+        obj = HistoryLog.objects.get(action='D')
+        self.assertEqual(len(obj), 1)
+
+        #let's check that model name equal ContactInfo
+        deleterecord = obj[0]
+        self.assertEqual(deleterecord.objectModel, 'ContactInfo')
