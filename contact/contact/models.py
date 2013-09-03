@@ -25,7 +25,7 @@ class RequestLog(models.Model):
 
     class Meta:
         #let's assume that 1 is more priority than 0
-        ordering = ['-priority', 'time']
+        ordering = ['priority', 'time']
 
 
 class HistoryLog(models.Model):

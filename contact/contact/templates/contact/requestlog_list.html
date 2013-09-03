@@ -4,13 +4,15 @@
 <table>
 		<thead>
 			<th>ID</th>
+            <th>Priority</th>
 			<th>DateTime</th>
 			<th>Path</th>
 		</thead>
 		<tbody>
 			{% for r in object_list %} 
 				<tr>
-					<td>{{ forloop.counter }}</td> 
+                    <td>{{ forloop.counter }}</td>
+					<td>{{ r.priority|yesno:"1,0" }}</td>
 					<td>{{ r.time }}</td>
 					<td>{{ r.path }}</td>
 				<tr>
