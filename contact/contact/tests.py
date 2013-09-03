@@ -99,6 +99,9 @@ class MiddlewareTest(TestCase):
             self.assertGreaterEqual(r.time, first_date)
             first_date = r.time
 
+        #check that response.content contains Priority
+        self.assertContains(result, 'Priority')
+
 
 class ContextProcessorTest(TestCase):
     def test_context_processor(self):

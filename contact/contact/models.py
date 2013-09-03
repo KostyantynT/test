@@ -21,9 +21,11 @@ class ContactInfo(models.Model):
 class RequestLog(models.Model):
     path = models.CharField("Request", max_length=256)
     time = models.DateTimeField("Date/Time", auto_now_add=True)
+    priority = models.BooleanField("Priority", default=True)
 
     class Meta:
-        ordering = ['time']
+        #let's assume that 1 is more priority than 0
+        ordering = ['-priority', 'time']
 
 
 class HistoryLog(models.Model):
